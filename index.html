@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BNI Jupiter 幸運大抽獎</title>
+<style>
+:root{--red:#C8102E;--red2:#9E0B23;--gold:#E2B33C;--gold2:#C08A00;--ink:#1A1A1A;--grey:#6B6B6B;--light:#F4F1EC;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"PingFang HK","PingFang TC","Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;color:#fff;overflow:hidden;
+ background:radial-gradient(ellipse at 50% 110%,#ff3b4f 0%,#C8102E 30%,#6d0614 75%,#3a020a 100%);}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;
+ background:repeating-linear-gradient(90deg,rgba(255,215,120,.06) 0 2px,transparent 2px 70px);mask:linear-gradient(#000 0%,transparent 80%)}
+.screen{position:fixed;inset:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .b{font-weight:900;font-size:30px;letter-spacing:1px;background:#fff;color:var(--red);padding:2px 10px;border-radius:6px}
+.brand .t{font-size:15px;letter-spacing:4px;color:var(--gold)}
+h1{font-size:44px;font-weight:900;letter-spacing:4px;text-shadow:0 4px 18px rgba(0,0,0,.35)}
+.btn{border:0;cursor:pointer;font:inherit;font-weight:800;border-radius:999px;padding:12px 28px;font-size:18px;color:#3a2600;
+ background:linear-gradient(180deg,#ffe08a,var(--gold) 55%,#b78612);box-shadow:0 6px 0 #8a6408,0 10px 24px rgba(0,0,0,.35)}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #8a6408}
+.btn.ghost{background:rgba(255,255,255,.12);color:#fff;box-shadow:none;border:1px solid rgba(255,255,255,.35)}
+.btn.small{padding:7px 16px;font-size:14px}
+/* setup */
+.setup{flex:1;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:20px;padding:0 32px 24px;min-height:0}
+.panel{background:rgba(255,255,255,.96);color:var(--ink);border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;min-height:0;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.panel h2{font-size:20px;color:var(--red);display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.panel h2 small{color:var(--grey);font-size:13px;font-weight:600}
+.list{overflow:auto;flex:1;padding-right:4px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chip{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:var(--light);font-size:15px;cursor:pointer;user-select:none}
+.chip input{accent-color:var(--red);width:17px;height:17px}
+.chip.off{opacity:.38;text-decoration:line-through}
+.chip .no{font-size:11px;color:var(--grey);width:22px}
+.row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.row input{flex:1;min-width:0;font:inherit;font-size:15px;padding:8px 10px;border:1px solid #ddd;border-radius:9px;background:#fff}
+.row .x{border:0;background:#eee;color:#888;border-radius:8px;width:32px;height:34px;cursor:pointer;font-size:18px}
+.addrow{display:flex;gap:8px;margin-top:6px}
+.addrow input{flex:1;font:inherit;padding:8px 10px;border:1px dashed #c9c9c9;border-radius:9px}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:0 32px 22px}
+.count{font-size:16px;opacity:.9}
+/* draw */
+.stage{flex:1;display:grid;grid-template-columns:1fr minmax(520px,62vh) 1fr;align-items:center;gap:24px;padding:0 32px 18px;min-height:0}
+.wheelwrap{position:relative;width:min(62vh,100%);aspect-ratio:1;justify-self:center}
+#wheel{width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 10px #fff3,0 0 0 18px var(--gold),0 0 60px 20px rgba(255,200,80,.35),0 30px 60px rgba(0,0,0,.45)}
+.pointer{position:absolute;top:-26px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:26px solid transparent;border-right:26px solid transparent;border-top:52px solid #fff;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4));z-index:3}
+.hub{position:absolute;inset:0;margin:auto;width:22%;height:22%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f2f2f2 40%,#d9d9d9);display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;
+ box-shadow:0 0 0 6px var(--red),0 8px 22px rgba(0,0,0,.4);z-index:2;color:var(--red);font-weight:900}
+.hub .s1{font-size:clamp(14px,2.4vh,26px);letter-spacing:2px}
+.hub .s2{font-size:clamp(9px,1.2vh,13px);color:var(--grey);letter-spacing:2px}
+.lights{position:absolute;inset:-30px;border-radius:50%;pointer-events:none}
+.lights i{position:absolute;width:12px;height:12px;border-radius:50%;background:#fff6c9;box-shadow:0 0 12px 4px #ffd36b;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+.side{display:flex;flex-direction:column;gap:16px;min-height:0;height:100%;justify-content:center}
+.prizecard{background:rgba(255,255,255,.97);color:var(--ink);border-radius:18px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.prizecard .k{font-size:14px;color:var(--gold2);letter-spacing:3px;font-weight:800}
+.prizecard .p{font-size:30px;font-weight:900;color:var(--red);margin:6px 0 10px;line-height:1.2}
+.prizecard .g{font-size:16px;color:var(--grey)}
+.prizecard .g b{color:var(--ink)}
+.nav{display:flex;gap:8px;margin-top:14px}
+.winners{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:16px 18px;max-height:46vh;overflow:auto}
+.winners h3{font-size:15px;color:var(--gold);letter-spacing:3px;margin-bottom:8px}
+.winners li{list-style:none;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.2);font-size:15px}
+.winners li b{font-size:18px}
+.winners li span{display:block;font-size:12.5px;opacity:.8}
+.opts{font-size:14px;opacity:.9;display:flex;align-items:center;gap:8px}
+.opts input{accent-color:var(--gold);width:16px;height:16px}
+/* winner modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(20,0,4,.55);backdrop-filter:blur(3px);z-index:20}
+.modal.on{display:flex}
+.card{position:relative;text-align:center;background:linear-gradient(180deg,#fff,#fff7e6);color:var(--ink);border-radius:26px;padding:40px 70px 34px;min-width:560px;
+ box-shadow:0 0 0 8px var(--gold),0 30px 80px rgba(0,0,0,.5);animation:pop .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.3) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+.card .c1{font-size:18px;letter-spacing:6px;color:var(--gold2);font-weight:800}
+.card .nm{font-size:76px;font-weight:900;color:var(--red);margin:6px 0 4px;line-height:1.1}
+.card .pz{font-size:26px;font-weight:800;margin-top:8px}
+.card .gv{font-size:18px;color:var(--grey);margin-top:8px}
+.card .gv b{color:var(--ink)}
+.card .btn{margin-top:26px}
+.burst{position:absolute;inset:-60px;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 10deg,rgba(255,200,60,.25) 10deg 20deg,transparent 20deg 30deg);border-radius:50%;animation:spin 8s linear infinite;z-index:-1}
+@keyframes spin{to{transform:rotate(360deg)}}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:30}
+.hint{position:fixed;bottom:10px;right:16px;font-size:12px;opacity:.6}
+
+/* ---- v3: bigger side panels ---- */
+#draw header h1{font-size:clamp(40px,3.4vw,64px)}
+.stage{grid-template-columns:minmax(0,1fr) min(64vh,40vw) minmax(0,1fr);gap:2.4vw;padding:0 2.2vw 2.4vh;align-items:stretch}
+.wheelwrap{width:100%;align-self:center}
+.side{height:auto;justify-content:center;gap:1.6vh}
+.prizecard{display:flex;flex-direction:column;justify-content:center;min-height:72vh;padding:3.2vh 2vw;border-radius:24px}
+.prizecard .k{font-size:clamp(16px,1.5vw,28px);letter-spacing:4px}
+.prizecard #pImg{max-height:36vh !important;margin:1.6vh 0 !important}
+.prizecard .p{font-size:clamp(32px,3.3vw,64px);margin:1vh 0 1.4vh}
+.prizecard .g{font-size:clamp(18px,1.7vw,32px)}
+.nav{margin-top:2.4vh;gap:12px}
+.nav .btn.small{padding:10px 26px;font-size:clamp(16px,1.3vw,24px)}
+.opts{font-size:clamp(14px,1.1vw,20px)}
+.opts input{width:22px;height:22px}
+.winners{min-height:72vh;max-height:78vh;padding:3vh 1.8vw;border-radius:24px;background:rgba(255,255,255,.96);color:var(--ink);border:0;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.winners h3{font-size:clamp(18px,1.6vw,30px);color:var(--gold2);margin-bottom:1.4vh}
+.winners li{padding:1.4vh 0;border-bottom:1px dashed #ddd;font-size:clamp(15px,1.2vw,22px)}
+.winners li b{font-size:clamp(26px,2.4vw,46px);color:var(--red);display:block;line-height:1.15}
+.winners li span{font-size:clamp(15px,1.25vw,24px);opacity:1;color:var(--grey);margin-top:.4vh}
+/* ---- v4: title centred directly above the wheel ---- */
+#draw header{padding-bottom:0}
+.wheelcol{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
+.drawtitle{font-size:clamp(40px,3.6vw,68px);line-height:1.1;margin:0 0 calc(3.2vh + 26px);text-align:center;white-space:nowrap}
+.stage{grid-template-columns:minmax(0,1fr) min(58vh,38vw) minmax(0,1fr)}
+.wheelwrap{width:min(58vh,38vw)}
+.prizecard .pnote{font-size:clamp(16px,1.4vw,26px);color:var(--gold2);font-weight:800;margin:-.6vh 0 1.4vh}
+.prizecard .pnote:empty{display:none}
+.prizecard .ph{display:flex;gap:8px;align-items:center;margin-top:6px}
+.prizecard .ph img,.pthumb{width:54px;height:54px;object-fit:cover;border-radius:8px;background:#ddd}
+.card #wImg{display:none;max-height:26vh;max-width:100%;margin:12px auto 0;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+
+<!-- ===== SETUP ===== -->
+<section class="screen on" id="setup">
+ <header>
+  <div class="brand"><span class="b">BNI</span><span class="t">JUPITER CHAPTER</span></div>
+  <h1>幸運大抽獎 · 名單確認</h1>
+  <div><button class="btn ghost small" id="fsBtn1">全螢幕</button></div>
+ </header>
+ <div class="setup">
+  <div class="panel">
+   <h2>會員名單 <small id="mCount"></small></h2>
+   <div class="row" style="margin-bottom:10px"><button class="btn ghost small" style="color:#C8102E;border-color:#ddd" id="allOn">全選</button><button class="btn ghost small" style="color:#888;border-color:#ddd" id="allOff">全部取消</button><span style="font-size:13px;color:#888">取消剔選＝缺席，不參與抽獎</span></div>
+   <div class="list"><div class="mgrid" id="memberList"></div></div>
+   <div class="addrow"><input id="newMember" placeholder="新增會員 / 替代人姓名，按 Enter"></div>
+  </div>
+  <div class="panel">
+   <h2>嘉賓名單 <small id="gCount"></small></h2>
+   <div class="list" id="guestList"></div>
+   <div class="addrow"><input id="newGuest" placeholder="新增嘉賓姓名，按 Enter"></div>
+  </div>
+  <div class="panel">
+   <h2>獎品 <small>獎品名稱 · 送出者</small></h2>
+   <div class="list" id="prizeList"></div>
+   <div class="addrow"><button class="btn small" id="addPrize">＋ 新增獎品</button></div>
+  </div>
+ </div>
+ <div class="foot">
+  <div class="count" id="poolInfo"></div>
+  <div style="display:flex;gap:12px"><button class="btn ghost" id="resetBtn">重設名單</button><button class="btn" id="goDraw">開始抽獎 ▶</button></div>
+ </div>
+</section>
+
+<!-- ===== DRAW ===== -->
+<section class="screen" id="draw">
+ <header>
+  <div class="brand"><span class="b">BNI</span><span class="t">JUPITER CHAPTER</span></div>
+  <div style="display:flex;gap:10px"><button class="btn ghost small" id="backBtn">◀ 名單</button><button class="btn ghost small" id="fsBtn2">全螢幕</button></div>
+ </header>
+ <div class="stage">
+  <div class="side">
+   <div class="prizecard">
+    <div class="k" id="pIdx">PRIZE 1</div>
+    <img id="pImg" alt="" style="display:none;width:100%;max-height:260px;object-fit:contain;border-radius:10px;margin:8px 0 4px">
+    <div class="p" id="pName">—</div>
+    <div class="pnote" id="pNote"></div>
+    <div class="g">送出者：<b id="pGiver">—</b></div>
+    <div class="nav"><button class="btn ghost small" style="color:#C8102E;border-color:#ddd" id="prevP">◀</button><button class="btn ghost small" style="color:#C8102E;border-color:#ddd" id="nextP">▶</button></div>
+   </div>
+   <label class="opts"><input type="checkbox" id="removeWinner" checked> 已中獎者不再參與之後的抽獎</label>
+  </div>
+  <div class="wheelcol">
+  <h1 class="drawtitle">幸運大抽獎</h1>
+  <div class="wheelwrap">
+   <div class="pointer"></div>
+   <div class="lights" id="lights"></div>
+   <canvas id="wheel" width="1200" height="1200"></canvas>
+   <div class="hub" id="spinBtn"><div class="s1">SPIN</div><div class="s2">開始</div></div>
+  </div>
+  </div>
+  <div class="side">
+   <div class="winners"><h3>得獎名單 WINNERS</h3><ul id="winList"><li style="opacity:.6">尚未抽出</li></ul></div>
+  </div>
+ </div>
+</section>
+
+<div class="modal" id="modal"><div class="card"><div class="burst"></div>
+ <div class="c1">CONGRATULATIONS · 恭喜</div>
+ <div class="nm" id="wName">—</div>
+ <div class="pz">獲得 <span id="wPrize" style="color:#C8102E">—</span></div>
+ <div class="gv">送出者：<b id="wGiver">—</b></div>
+ <img id="wImg" alt="">
+ <button class="btn" id="closeModal">下一個獎品 ▶</button>
+</div></div>
+<div class="hint">空白鍵 = 開始抽獎</div>
+
+<script src="data.js"></script>
+<script>
+/* ===== 名單及獎品來自 data.js（每週只需改 data.js）===== */
+const D=window.LUCKY_DATA||{week:'demo',members:'',guests:'',prizes:[]};
+const lines=t=>String(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
+const DEFAULT_MEMBERS=lines(D.members).map(l=>{const m=l.match(/^([A-H]\d{1,2})\s+(.+)$/);return m?[m[1],m[2]]:['',l]});
+const DEFAULT_GUESTS=lines(D.guests);
+const DEFAULT_PRIZES=(D.prizes||[]).map(p=>({name:p.name||'',giver:p.giver||'',img:p.photo||'',note:p.note||''}));
+const KEY="jupiter_luckydraw_"+(D.week||'demo');
+let S;
+function fresh(){return{members:DEFAULT_MEMBERS.map(([no,n])=>({no,name:n,on:true})),guests:DEFAULT_GUESTS.slice(),prizes:JSON.parse(JSON.stringify(DEFAULT_PRIZES)),winners:[],pi:0,removeWinner:true}}
+function load(){try{const t=localStorage.getItem(KEY);S=t?JSON.parse(t):fresh()}catch(e){S=fresh()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+/* ---------- setup render ---------- */
+function renderSetup(){
+ $('memberList').innerHTML=S.members.map((m,i)=>`<label class="chip ${m.on?'':'off'}"><input type="checkbox" data-i="${i}" ${m.on?'checked':''}><span class="no">${esc(m.no||'')}</span>${esc(m.name)}</label>`).join('');
+ $('memberList').querySelectorAll('input').forEach(cb=>cb.onchange=e=>{S.members[e.target.dataset.i].on=e.target.checked;save();renderSetup()});
+ $('guestList').innerHTML=S.guests.map((g,i)=>`<div class="row"><input value="${esc(g)}" data-i="${i}"><button class="x" data-i="${i}">×</button></div>`).join('')||'<div style="color:#999;font-size:14px">未有嘉賓</div>';
+ $('guestList').querySelectorAll('input').forEach(inp=>inp.oninput=e=>{S.guests[e.target.dataset.i]=e.target.value;save();info()});
+ $('guestList').querySelectorAll('.x').forEach(b=>b.onclick=e=>{S.guests.splice(+e.target.dataset.i,1);save();renderSetup()});
+ $('prizeList').innerHTML=S.prizes.map((p,i)=>`<div style="background:#F4F1EC;border-radius:12px;padding:10px;margin-bottom:10px">
+   <div style="font-size:12px;color:#C08A00;font-weight:800;letter-spacing:2px;margin-bottom:6px">PRIZE ${i+1}</div>
+   <div class="row"><input placeholder="獎品名稱" value="${esc(p.name)}" data-i="${i}" data-f="name"><button class="x" data-i="${i}">×</button></div>
+   <div class="row" style="margin:0"><input placeholder="送出者" value="${esc(p.giver)}" data-i="${i}" data-f="giver"></div>
+   <div class="row" style="margin:8px 0 0">${p.img?`<img class="pthumb" src="${esc(p.img)}">`:''}<label class="btn ghost small" style="color:#C8102E;border-color:#ddd;cursor:pointer">📷 ${p.img?'更換相片':'加入相片'}<input type="file" accept="image/*" data-i="${i}" class="pfile" style="display:none"></label>${p.img?`<button class="x" data-rm="${i}" title="移除相片">×</button>`:''}</div></div>`).join('');
+ $('prizeList').querySelectorAll('.pfile').forEach(inp=>inp.onchange=e=>{const f=e.target.files[0],i=+e.target.dataset.i;if(f)shrink(f,url=>{S.prizes[i].img=url;save();renderSetup()})});
+ $('prizeList').querySelectorAll('[data-rm]').forEach(b=>b.onclick=e=>{S.prizes[+e.target.dataset.rm].img='';save();renderSetup()});
+ $('prizeList').querySelectorAll('input:not(.pfile)').forEach(inp=>inp.oninput=e=>{S.prizes[e.target.dataset.i][e.target.dataset.f]=e.target.value;save()});
+ $('prizeList').querySelectorAll('.x:not([data-rm])').forEach(b=>b.onclick=e=>{S.prizes.splice(+e.target.dataset.i,1);save();renderSetup()});
+ info();
+}
+function shrink(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.85))};im.src=r.result};r.readAsDataURL(file)}
+function info(){
+ const m=S.members.filter(x=>x.on).length,g=S.guests.filter(x=>x.trim()).length;
+ $('mCount').textContent=`${m} / ${S.members.length} 出席`;$('gCount').textContent=`${g} 位`;
+ $('poolInfo').textContent=`參與抽獎：會員 ${m} 位 · 嘉賓 ${g} 位 · 獎品 ${S.prizes.length} 份`;
+}
+$('allOn').onclick=()=>{S.members.forEach(m=>m.on=true);save();renderSetup()};
+$('allOff').onclick=()=>{S.members.forEach(m=>m.on=false);save();renderSetup()};
+$('newMember').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim()){S.members.push({no:'+',name:e.target.value.trim(),on:true});e.target.value='';save();renderSetup()}};
+$('newGuest').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim()){S.guests.push(e.target.value.trim());e.target.value='';save();renderSetup()}};
+$('addPrize').onclick=()=>{S.prizes.push({name:`獎品 ${S.prizes.length+1}`,giver:''});save();renderSetup()};
+$('resetBtn').onclick=()=>{if(confirm('重設所有名單、獎品及得獎紀錄？')){S=fresh();save();renderSetup()}};
+$('goDraw').onclick=()=>{show('draw');buildPool();drawWheel();renderPrize();renderWinners()};
+$('backBtn').onclick=()=>{show('setup');renderSetup()};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+function fs(){const d=document;if(!d.fullscreenElement){(d.documentElement.requestFullscreen||d.documentElement.webkitRequestFullscreen).call(d.documentElement)}else{(d.exitFullscreen||d.webkitExitFullscreen).call(d)}}
+$('fsBtn1').onclick=fs;$('fsBtn2').onclick=fs;
+
+/* ---------- pool & wheel ---------- */
+let pool=[];   // {name, w}
+function buildPool(){
+ const won=new Set(S.removeWinner?S.winners.map(w=>w.name):[]);
+ pool=[];
+ S.members.filter(m=>m.on&&m.name.trim()&&!won.has(m.name)).forEach(m=>pool.push({name:m.name.trim(),w:2}));   // member: 2 chances
+ S.guests.filter(g=>g.trim()&&!won.has(g.trim())).forEach(g=>pool.push({name:g.trim(),w:1}));                 // guest: 1 chance
+ // shuffle display order so members/guests are mixed
+ for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+}
+const COLORS=['#C8102E','#FFFFFF','#E2B33C','#2B2B2B','#9E0B23','#F4F1EC','#C08A00','#5A5A5A'];
+const cv=$('wheel'),ctx=cv.getContext('2d');let rot=0;
+function drawWheel(){
+ const W=cv.width,R=W/2,n=Math.max(pool.length,1),a=2*Math.PI/n;
+ ctx.clearRect(0,0,W,W);ctx.save();ctx.translate(R,R);ctx.rotate(rot);
+ for(let i=0;i<n;i++){
+  const c=COLORS[i%COLORS.length];
+  ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R-6,i*a,(i+1)*a);ctx.closePath();
+  ctx.fillStyle=pool.length?c:'#444';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=2;ctx.stroke();
+  if(!pool.length)continue;
+  ctx.save();ctx.rotate(i*a+a/2);ctx.textAlign='right';ctx.textBaseline='middle';
+  const dark=['#FFFFFF','#F4F1EC','#E2B33C'].includes(c);ctx.fillStyle=dark?'#1A1A1A':'#FFFFFF';
+  const fsz=Math.max(14,Math.min(40,Math.floor(a*R*0.55)));ctx.font=`800 ${fsz}px "PingFang HK","Microsoft JhengHei",Arial`;
+  let t=pool[i].name;while(ctx.measureText(t).width>R*0.62&&t.length>3)t=t.slice(0,-1);
+  ctx.fillText(t,R-36,0);ctx.restore();
+ }
+ ctx.restore();
+ ctx.beginPath();ctx.arc(R,R,R-4,0,2*Math.PI);ctx.lineWidth=8;ctx.strokeStyle='#E2B33C';ctx.stroke();
+}
+// lights
+(function(){const L=$('lights');for(let i=0;i<28;i++){const e=document.createElement('i');const ang=i/28*2*Math.PI;e.style.left=`calc(50% + ${Math.cos(ang)*50}% - 6px)`;e.style.top=`calc(50% + ${Math.sin(ang)*50}% - 6px)`;e.style.animationDelay=(i%2?.5:0)+'s';L.appendChild(e)}})();
+
+/* ---------- sound ---------- */
+let AC;function tick(f=900,d=.03,v=.15){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+function fanfare(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tick(f,.35,.2),i*140))}
+
+/* ---------- spin ---------- */
+let spinning=false;
+function pickWeighted(){const tot=pool.reduce((s,p)=>s+p.w,0);let r=Math.random()*tot;for(let i=0;i<pool.length;i++){r-=pool[i].w;if(r<0)return i}return pool.length-1}
+function spin(){
+ if(spinning||$('modal').classList.contains('on'))return;
+ if(!pool.length){alert('沒有可參與抽獎的名單');return}
+ if(S.pi>=S.prizes.length){alert('所有獎品已抽出');return}
+ spinning=true;
+ const n=pool.length,a=2*Math.PI/n,idx=pickWeighted();
+ // pointer at top (-90deg). segment idx centre must end at -PI/2
+ const jitter=(Math.random()-.5)*a*0.7;
+ let target=-Math.PI/2-(idx*a+a/2)+jitter;
+ const base=rot-(rot%(2*Math.PI));
+ target=base+target-2*Math.PI*(8+Math.floor(Math.random()*3));
+ while(target>rot-2*Math.PI*8)target-=2*Math.PI;
+ const start=rot,dur=6500+Math.random()*1200,t0=performance.now();let lastSeg=-1;
+ function step(now){
+  const t=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-t,4);
+  rot=start+(target-start)*e;drawWheel();
+  const seg=Math.floor(((-Math.PI/2-rot)%(2*Math.PI)+4*Math.PI)%(2*Math.PI)/a);
+  if(seg!==lastSeg){lastSeg=seg;tick(700+Math.random()*300)}
+  if(t<1)requestAnimationFrame(step);else{spinning=false;win(pool[idx].name)}
+ }
+ requestAnimationFrame(step);
+}
+function win(name){
+ const p=S.prizes[S.pi]||{name:'—',giver:''};
+ S.winners.push({name,prize:p.name+(p.note?' · '+p.note:''),giver:p.giver});S.pi++;save();
+ $('wName').textContent=name;$('wPrize').textContent=(p.name||'—')+(p.note?' · '+p.note:'');$('wGiver').textContent=p.giver||'—';{const wi=$('wImg');if(p.img){wi.src=p.img;wi.style.display='block'}else{wi.style.display='none'}}
+ $('closeModal').textContent=S.pi<S.prizes.length?'下一個獎品 ▶':'完成 ✓';
+ $('modal').classList.add('on');fanfare();confetti();renderWinners();
+}
+$('closeModal').onclick=()=>{$('modal').classList.remove('on');buildPool();drawWheel();renderPrize()};
+$('spinBtn').onclick=spin;
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&$('draw').classList.contains('on')){e.preventDefault();if($('modal').classList.contains('on'))$('closeModal').click();else spin()}});
+$('removeWinner').checked=S.removeWinner;$('removeWinner').onchange=e=>{S.removeWinner=e.target.checked;save();buildPool();drawWheel()};
+$('prevP').onclick=()=>{S.pi=Math.max(0,S.pi-1);save();renderPrize()};
+$('nextP').onclick=()=>{S.pi=Math.min(S.prizes.length,S.pi+1);save();renderPrize()};
+function renderPrize(){
+ const p=S.prizes[S.pi];
+ $('pIdx').textContent=p?`PRIZE ${S.pi+1} / ${S.prizes.length}`:'ALL DONE';
+ $('pName').textContent=p?(p.name||'—'):'所有獎品已抽出 🎉';$('pNote').textContent=p&&p.note?p.note:'';$('pGiver').textContent=p?(p.giver||'—'):'—';
+ const im=$('pImg'); if(p&&p.img){im.src=p.img;im.style.display='block'}else{im.removeAttribute('src');im.style.display='none'}
+}
+function renderWinners(){
+ $('winList').innerHTML=S.winners.length?S.winners.map((w,i)=>`<li><b>${esc(w.name)}</b><span>${i+1}. ${esc(w.prize)}</span><span>送出者：${esc(w.giver||'—')}</span></li>`).join(''):'<li style="opacity:.6">尚未抽出</li>';
+}
+/* ---------- confetti ---------- */
+const fx=$('fx'),fctx=fx.getContext('2d');let parts=[];
+function size(){fx.width=innerWidth;fx.height=innerHeight}addEventListener('resize',size);size();
+function confetti(){const cols=['#C8102E','#E2B33C','#FFFFFF','#FFD36B','#9E0B23'];
+ for(let k=0;k<3;k++)setTimeout(()=>{for(let i=0;i<160;i++)parts.push({x:innerWidth*(k===0?.5:k===1?.15:.85),y:innerHeight*.45,vx:(Math.random()-.5)*18,vy:Math.random()*-18-6,g:.42,s:6+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[i%cols.length],l:160+Math.random()*80})},k*250);
+ if(!anim)loop()}
+let anim=false;function loop(){anim=true;fctx.clearRect(0,0,fx.width,fx.height);
+ parts.forEach(p=>{p.vy+=p.g;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.l--;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.r);fctx.fillStyle=p.c;fctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);fctx.restore()});
+ parts=parts.filter(p=>p.l>0&&p.y<innerHeight+40);if(parts.length)requestAnimationFrame(loop);else{anim=false;fctx.clearRect(0,0,fx.width,fx.height)}}
+renderSetup();
+</script>
+</body>
+</html>
