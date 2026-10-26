@@ -54,6 +54,7 @@ H2 Roy Lam
 
   guests: `
 Apple Chan
+Hugo Leung
 `,
 
   prizes: [
