@@ -202,7 +202,8 @@ const lines=t=>String(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const DEFAULT_MEMBERS=lines(D.members).map(l=>{const m=l.match(/^([A-H]\d{1,2})\s+(.+)$/);return m?[m[1],m[2]]:['',l]});
 const DEFAULT_GUESTS=lines(D.guests);
 const DEFAULT_PRIZES=(D.prizes||[]).map(p=>({name:p.name||'',giver:p.giver||'',img:p.photo||'',note:p.note||''}));
-const KEY="jupiter_luckydraw_"+(D.week||'demo');
+// key changes whenever data.js changes, so edited lists always load (state of the same data is kept)
+const KEY="jupiter_luckydraw_"+(D.week||'demo')+"_"+(s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return (h>>>0).toString(36)})(JSON.stringify(D));
 let S;
 function fresh(){return{members:DEFAULT_MEMBERS.map(([no,n])=>({no,name:n,on:true})),guests:DEFAULT_GUESTS.slice(),prizes:JSON.parse(JSON.stringify(DEFAULT_PRIZES)),winners:[],pi:0,removeWinner:true}}
 function load(){try{const t=localStorage.getItem(KEY);S=t?JSON.parse(t):fresh()}catch(e){S=fresh()}}
