@@ -57,10 +57,10 @@ Ben Lee
 
   prizes: [
     // name：獎品名稱（短啲）　note：補充（可留空）　giver：送出者　photo：相片路徑
-    { name: "運動／物理治療 Session", note: "第 1 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
-    { name: "運動／物理治療 Session", note: "第 2 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
     { name: "午馬文星茶",             note: "第 1 份（共 2 份）", giver: "Eric Tang",   photo: "photos/Eric Price.jpeg" },
     { name: "午馬文星茶",             note: "第 2 份（共 2 份）", giver: "Eric Tang",   photo: "photos/Eric Price.jpeg" },
+    { name: "運動／物理治療 Session", note: "第 1 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
+    { name: "運動／物理治療 Session", note: "第 2 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
   ],
 
 };
