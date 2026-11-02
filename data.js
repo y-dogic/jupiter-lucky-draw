@@ -9,7 +9,7 @@
    ========================================================= */
 window.LUCKY_DATA = {
 
-  week: "2026-10-27",
+  week: "2026-11-03",
 
   // ---- MEMBERS-START (sync_members.command 會自動改寫呢段) ----
   members: `
@@ -21,7 +21,6 @@ A5 Peggy Leung
 A6 Steven Ho
 A7 Terry Siu
 A8 Ruby Law
-A9 Biu Law 標哥
 A10 Jacky Liu
 B1 Angie Cheung
 B2 Dr. Brandon Chow
@@ -53,16 +52,15 @@ H2 Roy Lam
   // ---- MEMBERS-END ----
 
   guests: `
-Apple Chan
-Hugo Leung
+Ben Lee
 `,
 
   prizes: [
     // name：獎品名稱（短啲）　note：補充（可留空）　giver：送出者　photo：相片路徑
-    { name: "訂造恤衫", note: "第 1 份（共 2 份）",             giver: "Anthony Chan", photo: "" },
-    { name: "訂造恤衫", note: "第 2 份（共 2 份）",             giver: "Anthony Chan", photo: "" },
-    { name: "越式頭療", note: "價值 $488 · 第 1 份（共 2 份）", giver: "Annie Yuen",   photo: "" },
-    { name: "越式頭療", note: "價值 $488 · 第 2 份（共 2 份）", giver: "Annie Yuen",   photo: "" },
+    { name: "運動／物理治療 Session", note: "第 1 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
+    { name: "運動／物理治療 Session", note: "第 2 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
+    { name: "午馬文星茶",             note: "第 1 份（共 2 份）", giver: "Eric Tang",   photo: "photos/Eric Price.jpeg" },
+    { name: "午馬文星茶",             note: "第 2 份（共 2 份）", giver: "Eric Tang",   photo: "photos/Eric Price.jpeg" },
   ],
 
 };
