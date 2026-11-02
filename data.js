@@ -53,6 +53,7 @@ H2 Roy Lam
 
   guests: `
 Ben Lee
+Max Yeung
 `,
 
   prizes: [
