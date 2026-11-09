@@ -65,9 +65,10 @@ Harmony Choi
 
   prizes: [
     // name：獎品名稱（短啲）　note：補充（可留空）　giver：送出者　photo：相片路徑
-    { name: "Vitroguard Medi 消毒劑", note: "Sensitive + 長效抗菌抗病毒", giver: "Steven Ho",  photo: "photos/Steven Prize.jpeg" },
-    { name: "頭皮檢測及清潔療程",     note: "第 1 份（共 2 份）",         giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
-    { name: "頭皮檢測及清潔療程",     note: "第 2 份（共 2 份）",         giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
+    { name: "Vitroguard Medi 消毒劑",  note: "第 1 份（共 2 份）", giver: "Steven Ho",  photo: "photos/Steven Prize.jpeg" },
+    { name: "Vitroguard Medi 消毒劑",  note: "第 2 份（共 2 份）", giver: "Steven Ho",  photo: "photos/Steven Prize.jpeg" },
+    { name: "韓國納米銅肽洗護旅行套裝", note: "洗髮水及護髮素 · 第 1 份（共 2 份）", giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
+    { name: "韓國納米銅肽洗護旅行套裝", note: "洗髮水及護髮素 · 第 2 份（共 2 份）", giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
   ],
 
 };
