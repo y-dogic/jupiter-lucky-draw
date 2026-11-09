@@ -9,7 +9,7 @@
    ========================================================= */
 window.LUCKY_DATA = {
 
-  week: "2026-11-03",
+  week: "2026-11-10",
 
   // ---- MEMBERS-START (sync_members.command 會自動改寫呢段) ----
   members: `
@@ -21,7 +21,8 @@ A5 Peggy Leung
 A6 Steven Ho
 A7 Terry Siu
 A8 Ruby Law
-A10 Jacky Liu
+A9 Jacky Liu
+A10 Biu Law 標哥
 B1 Angie Cheung
 B2 Dr. Brandon Chow
 B3 Jeff Tang
@@ -52,16 +53,19 @@ H2 Roy Lam
   // ---- MEMBERS-END ----
 
   guests: `
-Ben Lee
-Max Yeung
+Joe Li
+陳蘊琪
+謝小慧
+Carmen
+Sam
+伍綺澄 BT
 `,
 
   prizes: [
     // name：獎品名稱（短啲）　note：補充（可留空）　giver：送出者　photo：相片路徑
-    { name: "午馬文星茶",             note: "第 1 份（共 2 份）", giver: "Eric Tang",   photo: "photos/Eric Price.jpeg" },
-    { name: "午馬文星茶",             note: "第 2 份（共 2 份）", giver: "Eric Tang",   photo: "photos/Eric Price.jpeg" },
-    { name: "運動／物理治療 Session", note: "第 1 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
-    { name: "運動／物理治療 Session", note: "第 2 份（共 2 份）", giver: "Terry Leung", photo: "photos/Terry Prize.jpeg" },
+    { name: "Vitroguard Medi 消毒劑", note: "Sensitive + 長效抗菌抗病毒", giver: "Steven Ho",  photo: "photos/Steven Prize.jpeg" },
+    { name: "頭皮檢測及清潔療程",     note: "第 1 份（共 2 份）",         giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
+    { name: "頭皮檢測及清潔療程",     note: "第 2 份（共 2 份）",         giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
   ],
 
 };
