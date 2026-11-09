@@ -59,6 +59,8 @@ Joe Li
 Carmen
 Sam
 伍綺澄 BT
+May Poon
+Harmony Choi
 `,
 
   prizes: [
