@@ -22,7 +22,7 @@ A6 Steven Ho
 A7 Terry Siu
 A8 Ruby Law
 A9 Jacky Liu
-A10 Biu Law 標哥
+A10 Biu Law
 B1 Angie Cheung
 B2 Dr. Brandon Chow
 B3 Jeff Tang
