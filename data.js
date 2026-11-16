@@ -9,7 +9,7 @@
    ========================================================= */
 window.LUCKY_DATA = {
 
-  week: "2026-11-10",
+  week: "2026-11-17",
 
   // ---- MEMBERS-START (sync_members.command 會自動改寫呢段) ----
   members: `
@@ -53,22 +53,14 @@ H2 Roy Lam
   // ---- MEMBERS-END ----
 
   guests: `
-Joe Li
-陳蘊琪
-謝小慧
-Carmen
-Sam
-伍綺澄 BT
-May Poon
-Harmony Choi
+Chester
+Charlotte
+Anson
 `,
 
   prizes: [
     // name：獎品名稱（短啲）　note：補充（可留空）　giver：送出者　photo：相片路徑
-    { name: "Vitroguard Medi 消毒劑",  note: "第 1 份（共 2 份）", giver: "Steven Ho",  photo: "photos/Steven Prize.jpeg" },
-    { name: "Vitroguard Medi 消毒劑",  note: "第 2 份（共 2 份）", giver: "Steven Ho",  photo: "photos/Steven Prize.jpeg" },
-    { name: "韓國納米銅肽洗護旅行套裝", note: "洗髮水及護髮素 · 第 1 份（共 2 份）", giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
-    { name: "韓國納米銅肽洗護旅行套裝", note: "洗髮水及護髮素 · 第 2 份（共 2 份）", giver: "Samson Luk", photo: "photos/Samson Prize.jpeg" },
+    { name: "30秒 AI 宣傳短片", note: "共 1 條", giver: "Yellow Wong", photo: "photos/Yellow Prize.jpg" },
   ],
 
 };
