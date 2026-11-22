@@ -9,7 +9,7 @@
    ========================================================= */
 window.LUCKY_DATA = {
 
-  week: "2026-11-17",
+  week: "2026-11-24",
 
   // ---- MEMBERS-START (sync_members.command 會自動改寫呢段) ----
   members: `
@@ -53,14 +53,16 @@ H2 Roy Lam
   // ---- MEMBERS-END ----
 
   guests: `
-Chester
-Charlotte
-Anson
+David Yip
+Crystal Ma
+James Li
+Nick
 `,
 
   prizes: [
     // name：獎品名稱（短啲）　note：補充（可留空）　giver：送出者　photo：相片路徑
-    { name: "30秒 AI 宣傳短片", note: "共 1 條", giver: "Yellow Wong", photo: "photos/Yellow Prize.jpg" },
+    { name: "45分鐘免費法律諮詢", note: "或 英語能力諮詢", giver: "Andrew Lau", photo: "photos/Andrew Prize.jpg" },
+    { name: "招財水晶樹", note: "共 2 份", giver: "Peggy Leung", photo: "photos/Peggy Prize.jpg" },
   ],
 
 };
